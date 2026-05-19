@@ -13,7 +13,10 @@ const io = new Server(server, {
   cors: { origin: '*' }
 });
 
-app.use(cors());
+app.use(cors({
+  origin: ['https://mini-lead-distribution.vercel.app', 'http://localhost:3000'],
+  credentials: true
+}));
 app.use(express.json());
 
 // Routes
