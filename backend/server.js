@@ -10,16 +10,20 @@ dotenv.config();
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
-  cors: { origin: '*' }
+  cors: {
+    origin: ['https://ephemeral-heliotrope-f8a9dd.netlify.app', 'http://localhost:3000'],
+    methods: ['GET', 'POST'],
+    credentials: true
+  }
 });
 
 app.use(cors({
-  origin: ['https://mini-lead-distribution.vercel.app', 'http://localhost:3000'],
+  origin: ['https://ephemeral-heliotrope-f8a9dd.netlify.app', 'http://localhost:3000'],
   credentials: true
 }));
+
 app.use(express.json());
 
-// Routes
 const authRoutes = require('./routes/auth');
 const leadRoutes = require('./routes/leads');
 const agentRoutes = require('./routes/agents');
@@ -30,7 +34,6 @@ app.use('/api/leads', leadRoutes);
 app.use('/api/agents', agentRoutes);
 app.use('/api/webhook', webhookRoutes);
 
-// Socket.io
 io.on('connection', (socket) => {
   console.log('User connected:', socket.id);
   socket.on('disconnect', () => {
@@ -40,7 +43,6 @@ io.on('connection', (socket) => {
 
 app.set('io', io);
 
-// MongoDB Connect
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
     console.log('MongoDB Connected!');
